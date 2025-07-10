@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "MyBa",
+    "slug": "MyBa",
+    "version": "1.0.0",
+
+    "web": {
+      "favicon": "./assets/logos/MyBa-Mini.png"
+    },
+
+    "experiments": {
+      "tsconfigPaths": true
+    },
+
+    "plugins": [],
+
+    "orientation": "portrait",
+    "icon": "./assets/logos/MyBa-Mini.png",
+
+    "userInterfaceStyle": "light",
+
+    "splash": {
+      "image": "./assets/logos/MyBa-Mini.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    }
+  }
+}
