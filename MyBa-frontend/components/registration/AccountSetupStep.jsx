@@ -1,11 +1,7 @@
 "use client"
-import { View, Text, TextInput, TouchableOpacity } from "react-native"
-import { CreditCard, PiggyBank, Wallet, DollarSign, Check } from "lucide-react-native"
 
-interface AccountSetupStepProps {
-  data: any
-  onUpdate: (data: any) => void
-}
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native"
+import { CreditCard, PiggyBank, Wallet, DollarSign, Check } from "lucide-react-native"
 
 const accountTypes = [
   {
@@ -34,14 +30,35 @@ const accountTypes = [
   },
 ]
 
-export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepProps) {
+export default function AccountSetupStep({ data, onUpdate }) {
   const selectedAccount = accountTypes.find((account) => account.id === data.accountType)
+
+  const validateDeposit = (amount) => {
+    if (!selectedAccount || selectedAccount.minDeposit === 0) return
+    const numericAmount = Number.parseFloat(amount)
+    if (!isNaN(numericAmount) && numericAmount < selectedAccount.minDeposit) {
+      Alert.alert(
+        "Minimum Deposit Required",
+        `The minimum deposit for ${selectedAccount.name} is $${selectedAccount.minDeposit}. Please enter an amount of $${selectedAccount.minDeposit} or more.`,
+        [{ text: "OK" }],
+      )
+    }
+  }
+
+  const handleDepositChange = (text) => {
+    onUpdate({ initialDeposit: text })
+  }
+
+  const handleDepositBlur = () => {
+    if (data.initialDeposit) {
+      validateDeposit(data.initialDeposit)
+    }
+  }
 
   return (
     <View className="space-y-6">
       <View>
         <Text className="text-lg font-semibold text-gray-900 mb-4">Choose Your Account Type</Text>
-
         {accountTypes.map((account) => (
           <TouchableOpacity
             key={account.id}
@@ -56,7 +73,6 @@ export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepPro
               >
                 <account.icon size={24} color={data.accountType === account.id ? "#3b82f6" : "#6b7280"} />
               </View>
-
               <View className="flex-1">
                 <View className="flex-row items-center justify-between mb-2">
                   <Text className="text-lg font-semibold text-gray-900">{account.name}</Text>
@@ -66,11 +82,8 @@ export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepPro
                     </View>
                   )}
                 </View>
-
                 <Text className="text-gray-600 text-sm mb-3">{account.description}</Text>
-
                 <Text className="text-blue-600 font-semibold text-sm mb-3">Minimum Deposit: ${account.minDeposit}</Text>
-
                 <View className="flex-row flex-wrap">
                   {account.features.map((feature, index) => (
                     <View key={index} className="bg-gray-100 px-3 py-1 rounded-full mr-2 mb-2">
@@ -83,10 +96,9 @@ export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepPro
           </TouchableOpacity>
         ))}
       </View>
-
       {selectedAccount && selectedAccount.minDeposit > 0 && (
-        <View>
-          <Text className="text-gray-700 text-sm font-medium mb-2">
+        <View className="mb-2">
+          <Text className="text-gray-700 text-sm font-medium my-2">
             Initial Deposit (Minimum: ${selectedAccount.minDeposit})
           </Text>
           <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">
@@ -95,13 +107,13 @@ export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepPro
               className="flex-1 ml-3 text-gray-900 text-base"
               placeholder={`${selectedAccount.minDeposit}.00`}
               value={data.initialDeposit}
-              onChangeText={(text) => onUpdate({ initialDeposit: text })}
+              onChangeText={handleDepositChange}
+              onBlur={handleDepositBlur}
               keyboardType="numeric"
             />
           </View>
         </View>
       )}
-
       {/* Terms and Conditions */}
       <View className="bg-white rounded-xl p-6 shadow-sm">
         <TouchableOpacity
@@ -124,11 +136,10 @@ export default function AccountSetupStep({ data, onUpdate }: AccountSetupStepPro
           </View>
         </TouchableOpacity>
       </View>
-
-      <View className="bg-green-50 p-4 rounded-xl">
+      <View className="bg-green-50 p-4 rounded-xl mt-2">
         <Text className="text-green-800 text-sm">
           <Text className="font-semibold">Almost Done!</Text>
-          {"\n"}Your account will be created instantly and you'll receive a confirmation email. Your debit card will
+          {"\n"}Your account will be created instantly and you ll receive a confirmation email. Your debit card will
           arrive within 7-10 business days.
         </Text>
       </View>

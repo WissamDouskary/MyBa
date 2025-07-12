@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useContext } from "react"
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Animated } from "react-native"
 import {
   Eye,
@@ -7,7 +7,6 @@ import {
   CreditCard,
   PiggyBank,
   Receipt,
-  Bell,
   User,
   LogOut,
   ArrowUpRight,
@@ -17,15 +16,38 @@ import {
   Home as HomeIcon,
   TrendingUp,
 } from "lucide-react-native"
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from "../context/AuthContext"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
-export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: boolean) => void }) {
+export default function HomeScreen({ onScroll }) {
   const [balanceVisible, setBalanceVisible] = React.useState(true)
-  const [userName] = React.useState("John Doe")
+  const { logout } = useContext(AuthContext)
+  const [userName, setUserName] = React.useState("")
+  const [userData, setUserData] = React.useState([])
+  const [accountData, setAccountData] = React.useState([])
 
-  const { logout } = useContext(AuthContext);
-  
+  // Change greetness word after date
+  const changeGreetness = () => {
+    
+  }
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userJson = await AsyncStorage.getItem("userData")
+        const accountJson = await AsyncStorage.getItem("accountData")
+          const parsedData = JSON.parse(userJson)
+          const parsedAccountData = JSON.parse(accountJson)
+          setUserName(parsedData.first_name + " " + parsedData.last_name)
+          setUserData(parsedData)
+          setAccountData(parsedAccountData)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchUserData()
+  }, []);
+
   // Add these new state variables and refs
   const scrollY = React.useRef(new Animated.Value(0)).current
   const lastScrollY = React.useRef(0)
@@ -33,15 +55,13 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
 
   const handleScroll = Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
     useNativeDriver: false,
-    listener: (event: any) => {
+    listener: (event) => {
       const currentScrollY = event.nativeEvent.contentOffset.y
       const scrollingDown = currentScrollY > lastScrollY.current && currentScrollY > 50
-
       if (scrollingDown !== isScrollingDown) {
         setIsScrollingDown(scrollingDown)
         onScroll?.(scrollingDown)
       }
-
       lastScrollY.current = currentScrollY
     },
   })
@@ -93,7 +113,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
   return (
     <View className="flex-1 bg-gray-50">
       <StatusBar barStyle="light-content" backgroundColor="#1e40af" />
-
       <ScrollView showsVerticalScrollIndicator={false} onScroll={handleScroll} scrollEventThrottle={16}>
         {/* Header Section */}
         <View className="bg-blue-600 pt-12 pb-8 px-6 rounded-b-3xl">
@@ -111,7 +130,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
               </TouchableOpacity>
             </View>
           </View>
-
           {/* Balance Card */}
           <View className="bg-white rounded-2xl p-6 shadow-lg">
             <View className="flex-row justify-between items-center mb-2">
@@ -120,24 +138,19 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
                 {balanceVisible ? <Eye size={18} color="#6b7280" /> : <EyeOff size={18} color="#6b7280" />}
               </TouchableOpacity>
             </View>
-            <Text className="text-gray-900 text-3xl font-bold mb-4">{balanceVisible ? "$12,847.50" : "••••••••"}</Text>
+            <Text className="text-gray-900 text-3xl font-bold mb-4">
+              {balanceVisible ? accountData.balance + " " + accountData.currency : "••••••••"}
+            </Text>
             <View className="flex-row justify-between">
               <View>
                 <Text className="text-gray-500 text-xs">Available</Text>
                 <Text className="text-gray-900 text-lg font-semibold">
-                  {balanceVisible ? "$11,200.00" : "••••••••"}
-                </Text>
-              </View>
-              <View>
-                <Text className="text-gray-500 text-xs">Savings</Text>
-                <Text className="text-green-600 text-lg font-semibold">
-                  {balanceVisible ? "$1,647.50" : "••••••••"}
+                  {balanceVisible ? accountData.available_balance + " " + accountData.currency : "••••••••"}
                 </Text>
               </View>
             </View>
           </View>
         </View>
-
         {/* Quick Actions */}
         <View className="px-6 mt-6">
           <Text className="text-gray-900 text-lg font-bold mb-4">Quick Actions</Text>
@@ -152,7 +165,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
             ))}
           </View>
         </View>
-
         {/* Recent Transactions */}
         <View className="px-6 mt-8">
           <View className="flex-row justify-between items-center mb-4">
@@ -161,7 +173,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
               <Text className="text-blue-600 text-sm font-medium">See All</Text>
             </TouchableOpacity>
           </View>
-
           <View className="bg-white rounded-2xl shadow-sm">
             {recentTransactions.map((transaction, index) => (
               <TouchableOpacity
@@ -191,7 +202,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
             ))}
           </View>
         </View>
-
         {/* Banking Services */}
         <View className="px-6 mt-8 mb-8">
           <Text className="text-gray-900 text-lg font-bold mb-4">Banking Services</Text>
@@ -207,26 +217,6 @@ export default function HomeScreen({ onScroll }: { onScroll?: (isScrollingDown: 
               </TouchableOpacity>
             ))}
           </View>
-        </View>
-
-        {/* Promotional Banner */}
-        <View className="px-6 mb-8">
-          <TouchableOpacity className="bg-purple-500 rounded-2xl p-6 shadow-lg">
-            <View className="flex-row justify-between items-center">
-              <View className="flex-1">
-                <Text className="text-white text-lg font-bold mb-2">Get Your Credit Card</Text>
-                <Text className="text-purple-100 text-sm mb-3">
-                  Apply now and get instant approval with exclusive benefits
-                </Text>
-                <View className="bg-white rounded-full px-4 py-2 self-start">
-                  <Text className="text-purple-600 font-semibold text-sm">Apply Now</Text>
-                </View>
-              </View>
-              <View className="ml-4">
-                <CreditCard size={48} color="white" />
-              </View>
-            </View>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

@@ -1,13 +1,7 @@
-"use client"
 import { View, Text, TextInput } from "react-native"
 import { Mail, Phone, MapPin, Globe } from "lucide-react-native"
 
-interface ContactInfoStepProps {
-  data: any
-  onUpdate: (data: any) => void
-}
-
-export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps) {
+export default function ContactInfoStep({ data, onUpdate }) {
   return (
     <View className="space-y-6">
       <View>
@@ -24,7 +18,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
           />
         </View>
       </View>
-
       <View>
         <Text className="text-gray-700 text-sm font-medium mb-2">Phone Number *</Text>
         <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">
@@ -38,7 +31,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
           />
         </View>
       </View>
-
       <View>
         <Text className="text-gray-700 text-sm font-medium mb-2">Street Address *</Text>
         <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">
@@ -52,7 +44,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
           />
         </View>
       </View>
-
       <View className="flex-row space-x-4">
         <View className="flex-1">
           <Text className="text-gray-700 text-sm font-medium mb-2">City *</Text>
@@ -66,7 +57,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
             />
           </View>
         </View>
-
         <View className="flex-1">
           <Text className="text-gray-700 text-sm font-medium mb-2">State</Text>
           <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">
@@ -80,7 +70,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
           </View>
         </View>
       </View>
-
       <View className="flex-row space-x-4">
         <View className="flex-1">
           <Text className="text-gray-700 text-sm font-medium mb-2">Postal Code</Text>
@@ -94,7 +83,6 @@ export default function ContactInfoStep({ data, onUpdate }: ContactInfoStepProps
             />
           </View>
         </View>
-
         <View className="flex-1">
           <Text className="text-gray-700 text-sm font-medium mb-2">Country</Text>
           <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">

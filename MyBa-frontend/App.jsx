@@ -18,7 +18,7 @@ function AppStack() {
 
   return (
     <Stack.Navigator
-      initialRouteName={userToken ? 'Home' : 'Sign Up'}
+      initialRouteName={userToken ? 'Home' : 'Log In'}
       screenOptions={{
         headerStyle: { backgroundColor: '#ffffff' },
         headerTintColor: '#1f2937',
@@ -28,13 +28,13 @@ function AppStack() {
     >
       {userToken ? (
         <>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="About" component={AboutScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="About" component={AboutScreen} options={{ headerShown: false }} />
         </>
       ) : (
         <>
-        <Stack.Screen name='Sign Up' component={SignUpPage} />
-        <Stack.Screen name='Log In' component={LoginScreen} />
+          <Stack.Screen name='Log In' component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='Sign Up' component={SignUpPage} options={{ headerShown: false }} />
         </>
       )}
     </Stack.Navigator>
@@ -42,9 +42,9 @@ function AppStack() {
 }
 
 export default function App() {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const checkToken = async () => {
       try {
