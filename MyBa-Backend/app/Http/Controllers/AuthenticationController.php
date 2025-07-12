@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Account;
 
 
 class AuthenticationController extends Controller
@@ -26,6 +27,8 @@ class AuthenticationController extends Controller
             'postal_code' => 'nullable|string|max:20',
             'country' => 'nullable|string|max:100',
             'profile_image_url' => 'nullable',
+            'account_type' => "required|string",
+            'initialDeposit' => "required|numeric"
         ]);
 
         $user = User::create([
@@ -43,13 +46,25 @@ class AuthenticationController extends Controller
             'profile_image_url' => $fields['profile_image_url'],
         ]);
 
-        
+        $accountNumber = 'ACCT-' . strtoupper(uniqid());
+
+        $account = $user->account()->create([
+            'account_number' => $accountNumber,
+            'account_type' => $fields["account_type"],
+            'account_name' => $user->first_name . ' ' . $user->last_name,
+            'balance' => $request["initialDeposit"],
+            'available_balance' => $fields["initialDeposit"],
+            'currency' => 'USD',
+            'is_primary' => true,
+            'is_active' => true,
+        ]);
 
         $token = $user->createToken("auth_token")->plainTextToken;
 
         return response()->json([
             'user' => $user,
             'token' => $token,
+            'account' => $account
         ], 201);
     }
 
@@ -69,10 +84,12 @@ class AuthenticationController extends Controller
         }
 
         $token = $user->createToken("auth_token")->plainTextToken;
+        $account = $user->account;
 
         return response()->json([
             'user' => $user,
             'token' => $token,
+            'account' => $account
         ], 200);
     }
 }

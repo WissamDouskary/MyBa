@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('balance', 15, 2)->default(0.00);
             $table->decimal('available_balance', 15, 2)->default(0.00);
             $table->string('currency', 3)->default('USD');
-            $table->boolean('is_primary')->default(false);
+            $table->boolean('is_primary')->default(true);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             
