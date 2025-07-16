@@ -63,13 +63,13 @@ export default function AccountSetupStep({ data, onUpdate }) {
           <TouchableOpacity
             key={account.id}
             onPress={() => onUpdate({ accountType: account.id })}
-            className={`bg-white rounded-xl p-6 mb-4 shadow-sm border-2 ${
-              data.accountType === account.id ? "border-blue-500" : "border-transparent"
+            className={`bg-white rounded-xl p-6 mb-4 shadow-sm ${
+              data.accountType === account.id ? " border-blue-500 " : "border-transparent"
             }`}
           >
             <View className="flex-row items-start">
               <View
-                className={`p-3 rounded-full mr-4 ${data.accountType === account.id ? "bg-blue-100" : "bg-gray-100"}`}
+                className={`p-3 rounded-full mr-4`}
               >
                 <account.icon size={24} color={data.accountType === account.id ? "#3b82f6" : "#6b7280"} />
               </View>
@@ -115,20 +115,21 @@ export default function AccountSetupStep({ data, onUpdate }) {
         </View>
       )}
       {/* Terms and Conditions */}
-      <View className="bg-white rounded-xl p-6 shadow-sm">
+      <View className="bg-white rounded-xl p-6 shadow-sm flex">
         <TouchableOpacity
           onPress={() => onUpdate({ agreeToTerms: !data.agreeToTerms })}
           className="flex-row items-start"
         >
           <View
-            className={`w-6 h-6 rounded border-2 mr-3 items-center justify-center ${
-              data.agreeToTerms ? "bg-blue-600 border-blue-600" : "border-gray-300"
+            className={`w-6 h-6 rounded border-2 mr-3 flex items-center justify-center ${
+              data.agreeToTerms ? "bg-blue-600 border-blue-600" : "border-gray-300 bg-gray-600"
             }`}
           >
             {data.agreeToTerms && <Check size={16} color="white" />}
+            {!data.agreeToTerms && <Check size={16} color="blue" />}
           </View>
           <View className="flex-1">
-            <Text className="text-gray-900 text-sm leading-5">
+            <Text className="text-gray-900 text-sm leading-5 ml-2">
               I agree to the <Text className="text-blue-600 font-medium">Terms of Service</Text> and{" "}
               <Text className="text-blue-600 font-medium">Privacy Policy</Text>. I understand that my account will be
               subject to verification and approval.
@@ -139,7 +140,7 @@ export default function AccountSetupStep({ data, onUpdate }) {
       <View className="bg-green-50 p-4 rounded-xl mt-2">
         <Text className="text-green-800 text-sm">
           <Text className="font-semibold">Almost Done!</Text>
-          {"\n"}Your account will be created instantly and you ll receive a confirmation email. Your debit card will
+          {"\n"}Your account will be created instantly and youll receive a confirmation email. Your debit card will
           arrive within 7-10 business days.
         </Text>
       </View>

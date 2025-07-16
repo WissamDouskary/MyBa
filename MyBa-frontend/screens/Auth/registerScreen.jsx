@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useContext } from "react"
 import { View, Text, ScrollView, TouchableOpacity, StatusBar, Alert } from "react-native"
 import { ArrowLeft, ArrowRight, Check } from "lucide-react-native"
@@ -8,6 +7,8 @@ import ContactInfoStep from "../../components/registration/ContactInfoStep"
 import SecurityStep from "../../components/registration/SecurityStep"
 import AccountSetupStep from "../../components/registration/AccountSetupStep"
 import { AuthContext } from "../../context/AuthContext"
+import { storeUserSession } from "components/Storage/saveUserSession"
+import { API_URL } from "config"
 import axios from "axios"
 
 const steps = [
@@ -81,7 +82,7 @@ export default function RegisterScreen({ navigation }) {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post("http://192.168.1.159:8000/api/register", {
+      const response = await axios.post(API_URL + "/register", {
         email: registrationData.email,
         password: registrationData.password,
         password_confirmation: registrationData.confirmPassword,
@@ -97,17 +98,30 @@ export default function RegisterScreen({ navigation }) {
         profile_image_url: null,
         account_type: registrationData.accountType,
         initialDeposit: registrationData.initialDeposit,
+        is_active: false
       })
-      const token = res.data.token
-      await login(token)
+
+      const { token, user, account } = response.data
+      await storeUserSession(token, user, account)
+
+      // Call the login function from AuthContext to update the userToken state.
+      // This will trigger AppStack to re-render and switch to the authenticated routes.
+      login(token)
+
       console.log("Registration Data:", registrationData)
       Alert.alert("Success", "Account created successfully!", [
-        { text: "OK", onPress: () => navigation.navigate("Home") },
+        {
+          text: "OK",
+          onPress: () => {
+            login(token)
+            navigation.goBack() // Add this line to pop the RegisterScreen from the stack
+          },
+        },
       ])
     } catch (error) {
       if (error.response) {
         console.log("Validation errors:", error.response.data.errors)
-        Alert.alert("Validation failed", error.response.data.errors)
+        Alert.alert("Validation failed", JSON.parse(error.response.data.errors.email))
       } else {
         console.log("Error", error.message)
         Alert.alert("Error", error.message)

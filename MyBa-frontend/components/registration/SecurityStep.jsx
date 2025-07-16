@@ -77,8 +77,8 @@ export default function SecurityStep({ data, onUpdate }) {
           </View>
         )}
       </View>
-      <View>
-        <Text className="text-gray-700 text-sm font-medium my-2">Confirm Password *</Text>
+      <View >
+        <Text className="text-gray-700 text-sm font-medium my-5">Confirm Password *</Text>
         <View className="flex-row items-center bg-white rounded-xl px-4 py-3 shadow-sm">
           <Lock size={20} color="#6b7280" />
           <TextInput

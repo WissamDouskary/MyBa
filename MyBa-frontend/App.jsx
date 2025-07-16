@@ -1,24 +1,31 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Alert, View, Text } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, ActivityIndicator } from 'react-native';
 import HomeScreen from './screens/Home';
 import AboutScreen from './screens/About';
 import SignUpPage from './screens/Auth/registerScreen';
 import LoginScreen from './screens/Auth/loginScreen';
-import CustomTabBar from 'components/Navbar/CustomTabBar';
+import CustomTabBar from 'components/Navbar/CustomSidebar';
+import TransferScreen from 'screens/TransfertScreen';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import './global.css';
 
 const Stack = createNativeStackNavigator();
 
 function AppStack() {
-  const { userToken } = useContext(AuthContext);
+  const { userToken, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#1f2937" />
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator
-      initialRouteName={userToken ? 'Home' : 'Log In'}
       screenOptions={{
         headerStyle: { backgroundColor: '#ffffff' },
         headerTintColor: '#1f2937',
@@ -30,11 +37,12 @@ function AppStack() {
         <>
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="About" component={AboutScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Transfert" component={TransferScreen} options={{ headerShown: false }} />
         </>
       ) : (
         <>
-          <Stack.Screen name='Log In' component={LoginScreen} options={{ headerShown: false }} />
-          <Stack.Screen name='Sign Up' component={SignUpPage} options={{ headerShown: false }} />
+          <Stack.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Sign Up" component={SignUpPage} options={{ headerShown: false }} />
         </>
       )}
     </Stack.Navigator>
@@ -42,30 +50,14 @@ function AppStack() {
 }
 
 export default function App() {
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem('userToken');
-        setToken(storedToken);
-      } catch (error) {
-        console.error('Error getting token:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkToken();
-  }, []);
-
   return (
     <AuthProvider>
       <NavigationContainer>
         <View className="flex-1">
           <AppStack />
-          {token ? (<CustomTabBar />) : ("")}
+          <AuthContext.Consumer>
+            {({ userToken }) => userToken ? <CustomTabBar /> : null}
+          </AuthContext.Consumer>
         </View>
       </NavigationContainer>
     </AuthProvider>

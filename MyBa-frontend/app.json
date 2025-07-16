@@ -5,7 +5,7 @@
     "version": "1.0.0",
 
     "web": {
-      "favicon": "./assets/logos/MyBa-Mini.png"
+      "favicon": "./assets/imgs/MyBa-Mini.png"
     },
 
     "experiments": {
@@ -15,12 +15,12 @@
     "plugins": [],
 
     "orientation": "portrait",
-    "icon": "./assets/logos/MyBa-Mini.png",
+    "icon": "./assets/imgs/MyBa-Mini.png",
 
     "userInterfaceStyle": "light",
 
     "splash": {
-      "image": "./assets/logos/MyBa-Mini.png",
+      "image": "./assets/imgs/MyBa-Mini.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -30,7 +30,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/imgs/MyBa.png",
         "backgroundColor": "#ffffff"
       }
     }
